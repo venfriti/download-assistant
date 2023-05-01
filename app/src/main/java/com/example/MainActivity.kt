@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
 
         val radioGroup: RadioGroup = findViewById(R.id.radio_group)
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -82,14 +82,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-
-        }
-    }
-
-
     private fun download() {
         val request =
             DownloadManager.Request(Uri.parse(downloadUrl))
@@ -103,6 +95,41 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                if (id == downloadID) {
+                    val query = DownloadManager.Query()
+                    query.setFilterById(id)
+                    val cursor = downloadManager.query(query)
+                    if (cursor.moveToFirst()) {
+                        val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                            // Download completed successfully
+                            val uri =
+                                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+                            // Do something with the downloaded file
+                        } else if (status == DownloadManager.STATUS_FAILED) {
+                            // Download failed
+                            val reason =
+                                cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+                            // Handle the failure
+                        } else {
+                            // Download is still in progress
+                            val bytesDownloaded =
+                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                            val bytesTotal =
+                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                            val percent = bytesDownloaded * 100 / bytesTotal
+                            // Update the download progress
+                        }
+                    }
+                }
+            }
+        }
+        val intent = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        registerReceiver(receiver, intent)
     }
 
     companion object {
