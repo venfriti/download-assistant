@@ -1,8 +1,13 @@
 package com.example
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
 import com.example.ButtonState
@@ -14,6 +19,12 @@ class LoadingButton @JvmOverloads constructor(
     private var widthSize = 0
     private var heightSize = 0
 
+    private val textPaint = Paint().apply {
+        color = Color.WHITE
+        textSize = 40f
+        textAlign = Paint.Align.CENTER
+    }
+
     private val valueAnimator = ValueAnimator()
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
@@ -22,13 +33,32 @@ class LoadingButton @JvmOverloads constructor(
 
 
     init {
-
+        isClickable = true
     }
 
 
-    override fun onDraw(canvas: Canvas?) {
+    @SuppressLint("DrawAllocation")
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        val paint = Paint()
+        paint.color = Color.GRAY
+
+        val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
+        canvas.drawRoundRect(rect, 10f, 10f, paint)
+
+        paint.color = Color.GRAY
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 2f
+
+        val textHeight = textPaint.descent() - textPaint.ascent()
+        val textOffset = textHeight / 2 - textPaint.descent()
+
+        val label = resources.getString(R.string.download)
+        canvas.drawText(
+            label, width.toFloat() / 2,
+            height.toFloat() / 2 + textOffset, textPaint
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
