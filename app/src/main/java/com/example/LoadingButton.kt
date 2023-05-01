@@ -21,7 +21,7 @@ class LoadingButton @JvmOverloads constructor(
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
-        textSize = 40f
+        textSize = 60f
         textAlign = Paint.Align.CENTER
     }
 
@@ -42,14 +42,10 @@ class LoadingButton @JvmOverloads constructor(
         super.onDraw(canvas)
 
         val paint = Paint()
-        paint.color = Color.GRAY
+        paint.color = context.getColor(R.color.colorPrimary)
 
         val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
         canvas.drawRoundRect(rect, 10f, 10f, paint)
-
-        paint.color = Color.GRAY
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 2f
 
         val textHeight = textPaint.descent() - textPaint.ascent()
         val textOffset = textHeight / 2 - textPaint.descent()

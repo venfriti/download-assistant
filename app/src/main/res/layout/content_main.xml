@@ -20,20 +20,38 @@
         <RadioButton
             android:id="@+id/option_one"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/glide_image_loading_library_by_bumptech"/>
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="15dp"
+            android:textSize="20sp"
+            android:text="@string/glide_image_loading_library_by_bumptech"
+            android:contentDescription="@string/glide_image_loading_library_by_bumptech"/>
 
         <RadioButton
             android:id="@+id/option_two"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/loadapp_current_repository_by_udacity"/>
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="15dp"
+            android:textSize="20sp"
+            android:text="@string/loadapp_current_repository_by_udacity"
+            android:contentDescription="@string/loadapp_current_repository_by_udacity"/>
 
         <RadioButton
             android:id="@+id/option_three"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"/>
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"
+            android:contentDescription="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"/>
     </RadioGroup>
 
     <com.example.LoadingButton
@@ -41,9 +59,11 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="20dp"
+        android:contentDescription="@string/download"
+        android:text="@string/download"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/radio_group"
-        android:text="@string/download" />
+        app:layout_constraintTop_toBottomOf="@id/radio_group" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
