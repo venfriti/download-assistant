@@ -1,19 +1,23 @@
 package com.example
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -41,13 +45,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        notificationManager = ContextCompat.getSystemService(
+            applicationContext,
+            NotificationManager::class.java
+        ) as NotificationManager
 
+        createChannel(
+            getString(R.string.download_notification_channel_id),
+            getString(R.string.download_notification_channel_name)
+        )
 
         val radioGroup: RadioGroup = findViewById(R.id.radio_group)
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId){
                 R.id.option_one -> {
                     updateUrl(DownloadUrl.GLIDE)
+                    notificationManager.sendNotifications(applicationContext.getString(R.string.button_loading), applicationContext)
                     Toast.makeText(this, downloadUrl, Toast.LENGTH_SHORT).show()
                 }
                 R.id.option_two -> {
@@ -82,6 +95,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = "download completed"
+
+            notificationManager = getSystemService(
+                NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
     private fun download() {
         val request =
             DownloadManager.Request(Uri.parse(downloadUrl))
@@ -104,25 +137,28 @@ class MainActivity : AppCompatActivity() {
                     query.setFilterById(id)
                     val cursor = downloadManager.query(query)
                     if (cursor.moveToFirst()) {
-                        val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                        if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                            // Download completed successfully
-                            val uri =
-                                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-                            // Do something with the downloaded file
-                        } else if (status == DownloadManager.STATUS_FAILED) {
-                            // Download failed
-                            val reason =
-                                cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
-                            // Handle the failure
-                        } else {
-                            // Download is still in progress
-                            val bytesDownloaded =
-                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                            val bytesTotal =
-                                cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                            val percent = bytesDownloaded * 100 / bytesTotal
-                            // Update the download progress
+                        when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                            DownloadManager.STATUS_SUCCESSFUL -> {
+                                // Download completed successfully
+                                val uri =
+                                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+                                // Do something with the downloaded file
+                            }
+                            DownloadManager.STATUS_FAILED -> {
+                                // Download failed
+                                val reason =
+                                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+                                // Handle the failure
+                            }
+                            else -> {
+                                // Download is still in progress
+                                val bytesDownloaded =
+                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                                val bytesTotal =
+                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                                val percent = bytesDownloaded * 100 / bytesTotal
+                                // Update the download progress
+                            }
                         }
                     }
                 }
