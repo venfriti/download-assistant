@@ -1,5 +1,6 @@
 package com.example
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -28,7 +29,6 @@ enum class DownloadUrl(val value: Int) {
     UDACITY(R.string.udacity),
     RETROFIT(R.string.retrofit)
 }
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,16 +60,12 @@ class MainActivity : AppCompatActivity() {
             when (checkedId){
                 R.id.option_one -> {
                     updateUrl(DownloadUrl.GLIDE)
-                    notificationManager.sendNotifications(applicationContext.getString(R.string.button_loading), applicationContext)
-                    Toast.makeText(this, downloadUrl, Toast.LENGTH_SHORT).show()
                 }
                 R.id.option_two -> {
                     updateUrl(DownloadUrl.UDACITY)
-                    Toast.makeText(this, downloadUrl, Toast.LENGTH_SHORT).show()
                 }
                 R.id.option_three -> {
                     updateUrl(DownloadUrl.RETROFIT)
-                    Toast.makeText(this, downloadUrl, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -115,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
         val request =
             DownloadManager.Request(Uri.parse(downloadUrl))
@@ -136,15 +133,21 @@ class MainActivity : AppCompatActivity() {
                     val query = DownloadManager.Query()
                     query.setFilterById(id)
                     val cursor = downloadManager.query(query)
-                    if (cursor.moveToFirst()) {
+                    if (cursor.moveToFirst())
                         when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
                             DownloadManager.STATUS_SUCCESSFUL -> {
                                 // Download completed successfully
+                                notificationManager.sendNotifications(
+                                    applicationContext.getString(R.string.notification_successful),
+                                    applicationContext)
                                 val uri =
                                     cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                                 // Do something with the downloaded file
                             }
                             DownloadManager.STATUS_FAILED -> {
+                                notificationManager.sendNotifications(
+                                    applicationContext.getString(R.string.notification_failed),
+                                    applicationContext)
                                 // Download failed
                                 val reason =
                                     cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
@@ -160,7 +163,6 @@ class MainActivity : AppCompatActivity() {
                                 // Update the download progress
                             }
                         }
-                    }
                 }
             }
         }
