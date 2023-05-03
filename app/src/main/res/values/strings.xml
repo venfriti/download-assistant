@@ -6,8 +6,8 @@
     <string name="notification_description">The Project 3 repository is downloaded</string>
     <string name="notification_button">See changes</string>
     <string name="notification_title">Download Assistant</string>
-    <string name="notification_successful">Downloaded Successfully</string>
-    <string name="notification_failed">Downloaded Failed</string>
+    <string name="notification_successful">Download Successful</string>
+    <string name="notification_failed">Download Failed</string>
 
     <string name="button_name">Click me</string>
     <string name="button_loading">We are loading </string>

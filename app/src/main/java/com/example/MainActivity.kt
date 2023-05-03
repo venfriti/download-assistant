@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createChannel(channelId: String, channelName: String) {
+        //Create channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val notificationChannel = NotificationChannel(
                 channelId,
@@ -145,13 +146,13 @@ class MainActivity : AppCompatActivity() {
                                 // Do something with the downloaded file
                             }
                             DownloadManager.STATUS_FAILED -> {
-                                notificationManager.sendNotifications(
-                                    applicationContext.getString(R.string.notification_failed),
-                                    applicationContext)
                                 // Download failed
                                 val reason =
                                     cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
                                 // Handle the failure
+                                notificationManager.sendNotifications(
+                                    applicationContext.getString(R.string.notification_failed),
+                                    applicationContext)
                             }
                             else -> {
                                 // Download is still in progress
