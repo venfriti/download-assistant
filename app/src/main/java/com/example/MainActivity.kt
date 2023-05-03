@@ -100,6 +100,10 @@ class MainActivity : AppCompatActivity() {
                 NotificationManager.IMPORTANCE_DEFAULT
             )
 
+                .apply {
+                    setShowBadge(false)
+                }
+
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.RED
             notificationChannel.enableVibration(true)
