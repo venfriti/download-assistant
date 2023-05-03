@@ -9,13 +9,13 @@
     tools:showIn="@layout/activity_detail">
 
     <TextView
-        android:id="@+id/fileNameTitle"
+        android:id="@+id/fileText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:textSize="20sp"
         android:minHeight="48dp"
         android:text="@string/file_name"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,10 +25,38 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:minHeight="48dp"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fileNameTitle"
+        app:layout_constraintStart_toEndOf="@+id/fileText"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:minHeight="48dp"
+        android:text="@string/status"
+        android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/statusName"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/statusName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:minHeight="48dp"
+        android:text="TextView"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/statusText"
+        app:layout_constraintTop_toBottomOf="@+id/fileName" />
+
+
 
     <Button
         android:id="@+id/button"
@@ -36,11 +64,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:minHeight="48dp"
-        android:padding="16dp"
         android:text="@string/ok"
         android:textSize="20sp"
+        android:textColor="@color/white"
+        android:background="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.38"
