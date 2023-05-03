@@ -67,7 +67,7 @@
         android:layout_marginBottom="24dp"
         android:minHeight="48dp"
         android:text="@string/ok"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textColor="@color/white"
         android:background="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"

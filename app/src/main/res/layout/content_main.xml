@@ -9,49 +9,61 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <ImageView
+        android:id="@+id/downloadImage"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/download_image"
+        android:src="@drawable/download_image"/>
+
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="72dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/downloadImage">
 
         <RadioButton
             android:id="@+id/option_one"
+            style="@style/radioButtonProperties"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/radioButtonProperties"
-            android:text="@string/glide_image_loading_library_by_bumptech"
-            android:contentDescription="@string/glide_image_loading_library_by_bumptech"/>
+            android:contentDescription="@string/glide_image_loading_library_by_bumptech"
+            android:text="@string/glide_image_loading_library_by_bumptech" />
 
         <RadioButton
             android:id="@+id/option_two"
+            style="@style/radioButtonProperties"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/radioButtonProperties"
-            android:text="@string/loadapp_current_repository_by_udacity"
-            android:contentDescription="@string/loadapp_current_repository_by_udacity"/>
+            android:contentDescription="@string/loadapp_current_repository_by_udacity"
+            android:text="@string/loadapp_current_repository_by_udacity" />
 
         <RadioButton
             android:id="@+id/option_three"
+            style="@style/radioButtonProperties"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/radioButtonProperties"
-            android:text="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"
-            android:contentDescription="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"/>
+            android:contentDescription="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"
+            android:text="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc" />
     </RadioGroup>
 
     <com.example.LoadingButton
         android:id="@+id/custom_button"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="32dp"
         android:contentDescription="@string/download"
         android:text="@string/download"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/radio_group" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
