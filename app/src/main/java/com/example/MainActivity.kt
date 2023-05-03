@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
 
     private var downloadUrl: String = ""
+    var notificationMessage: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                                 // Download completed successfully
                                 notificationManager.sendNotifications(
                                     applicationContext.getString(R.string.notification_successful),
-                                    applicationContext)
+                                    applicationContext, "Success")
                                 val uri =
                                     cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                                 // Do something with the downloaded file
@@ -156,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                                 // Handle the failure
                                 notificationManager.sendNotifications(
                                     applicationContext.getString(R.string.notification_failed),
-                                    applicationContext)
+                                    applicationContext, "Failed")
                             }
                             else -> {
                                 // Download is still in progress

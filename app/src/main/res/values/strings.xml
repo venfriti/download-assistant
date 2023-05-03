@@ -24,4 +24,6 @@
     <string name="glide_url">https://github.com/bumptech/glide</string>
     <string name="udacity_url">https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/maste.zip</string>
     <string name="retrofit_url">https://github.com/square/retrofit</string>
+    <string name="file_name">File name:</string>
+    <string name="ok">OK</string>
 </resources>
