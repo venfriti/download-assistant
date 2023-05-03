@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
 
     private var downloadUrl: String = ""
-    var notificationMessage: String = ""
+    var fileName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +61,15 @@ class MainActivity : AppCompatActivity() {
             when (checkedId){
                 R.id.option_one -> {
                     updateUrl(DownloadUrl.GLIDE)
+                    fileName = getString(R.string.glide_image_loading_library_by_bumptech)
                 }
                 R.id.option_two -> {
                     updateUrl(DownloadUrl.UDACITY)
+                    fileName = getString(R.string.loadapp_current_repository_by_udacity)
                 }
                 R.id.option_three -> {
                     updateUrl(DownloadUrl.RETROFIT)
+                    fileName = getString(R.string.retrofit_type_safe_http_client_for_android_and_java_by_square_inc)
                 }
             }
         }
@@ -145,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                                 // Download completed successfully
                                 notificationManager.sendNotifications(
                                     applicationContext.getString(R.string.notification_successful),
-                                    applicationContext, "Success")
+                                    applicationContext, fileName, "Success")
                                 val uri =
                                     cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                                 // Do something with the downloaded file
@@ -157,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                                 // Handle the failure
                                 notificationManager.sendNotifications(
                                     applicationContext.getString(R.string.notification_failed),
-                                    applicationContext, "Failed")
+                                    applicationContext, fileName, "Failed")
                             }
                             else -> {
                                 // Download is still in progress

@@ -18,7 +18,10 @@ class DetailActivity : AppCompatActivity() {
         val extras = intent.extras
         if (extras != null) {
             val notificationStatus = extras.getString("notification_status")
-            val statusText = findViewById<TextView>(R.id.fileName)
+            val fileName = extras.getString("file_name")
+            val fileText = findViewById<TextView>(R.id.fileName)
+            val statusText = findViewById<TextView>(R.id.statusName)
+            fileText.text = fileName
             statusText.text = notificationStatus
         }
 

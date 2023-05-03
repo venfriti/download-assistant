@@ -12,12 +12,13 @@ private val NOTIFICATION_ID = 0
 private val REQUEST_CODE = 0
 private val FLAGS = 0
 
-fun NotificationManager.sendNotifications(messageBody: String, applicationContext: Context, notificationStatus: String){
+fun NotificationManager.sendNotifications(messageBody: String, applicationContext: Context, fileName: String, notificationStatus: String){
 
     //Create content intent for the notification, which launches detail activity
 
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
     contentIntent.putExtra("notification_status", notificationStatus)
+    contentIntent.putExtra("file_name", fileName)
 
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
