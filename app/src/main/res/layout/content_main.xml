@@ -13,11 +13,12 @@
         android:id="@+id/downloadImage"
         android:layout_width="match_parent"
         android:layout_height="230dp"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/download_image"
-        android:src="@drawable/download_image"/>
+        android:src="@drawable/main_image"/>
 
     <RadioGroup
         android:id="@+id/radio_group"
