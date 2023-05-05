@@ -17,8 +17,8 @@ fun NotificationManager.sendNotifications(messageBody: String, applicationContex
     //Create content intent for the notification, which launches detail activity
 
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
-    contentIntent.putExtra("notification_status", notificationStatus)
     contentIntent.putExtra("file_name", fileName)
+    contentIntent.putExtra("notification_status", notificationStatus)
 
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
@@ -33,8 +33,7 @@ fun NotificationManager.sendNotifications(messageBody: String, applicationContex
     )
 
         .setSmallIcon(R.drawable.download_icon)
-        .setContentTitle(applicationContext
-            .getString(R.string.notification_title))
+        .setContentTitle(fileName)
         .setContentText(messageBody)
         .setContentIntent(contentPendingIntent)
         .setAutoCancel(true)
