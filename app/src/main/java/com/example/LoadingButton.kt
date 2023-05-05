@@ -10,7 +10,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
-import com.example.ButtonState
+import android.widget.Button
 import kotlin.properties.Delegates
 
 class LoadingButton @JvmOverloads constructor(
@@ -27,10 +27,6 @@ class LoadingButton @JvmOverloads constructor(
 
     private val valueAnimator = ValueAnimator()
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
-
-    }
-
 
     init {
         isClickable = true
@@ -42,7 +38,15 @@ class LoadingButton @JvmOverloads constructor(
         super.onDraw(canvas)
 
         val paint = Paint()
-        paint.color = context.getColor(R.color.colorPrimary)
+
+        paint.color = when (buttonState) {
+            ButtonState.Clicked -> context.getColor(R.color.colorPrimary)
+            ButtonState.Loading -> context.getColor(R.color.colorPrimaryDark)
+            ButtonState.Completed -> context.getColor(R.color.colorPrimary)
+        }
+        invalidate()
+
+
 
         val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
         canvas.drawRoundRect(rect, 10f, 10f, paint)
@@ -55,6 +59,8 @@ class LoadingButton @JvmOverloads constructor(
             label, width.toFloat() / 2,
             height.toFloat() / 2 + textOffset, textPaint
         )
+
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

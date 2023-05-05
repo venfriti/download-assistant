@@ -122,61 +122,59 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
-        val request =
-            DownloadManager.Request(Uri.parse(downloadUrl))
-                .setTitle(getString(R.string.app_name))
-                .setDescription(getString(R.string.app_description))
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "filename.ext")
-                .setRequiresCharging(false)
-                .setAllowedOverMetered(true)
-                .setAllowedOverRoaming(true)
+        if (downloadUrl == ""){
+            Toast.makeText(this, "Choose a file to download", Toast.LENGTH_SHORT).show()
+        } else{
+            buttonState = ButtonState.Loading
+            val request =
+                DownloadManager.Request(Uri.parse(downloadUrl))
+                    .setTitle(getString(R.string.app_name))
+                    .setDescription(getString(R.string.app_description))
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "filename.ext")
+                    .setRequiresCharging(false)
+                    .setAllowedOverMetered(true)
+                    .setAllowedOverRoaming(true)
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        downloadID =
-            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+            val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            downloadID =
+                downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (id == downloadID) {
-                    val query = DownloadManager.Query()
-                    query.setFilterById(id)
-                    val cursor = downloadManager.query(query)
-                    if (cursor.moveToFirst())
-                        when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-                            DownloadManager.STATUS_SUCCESSFUL -> {
-                                // Download completed successfully
-                                notificationManager.sendNotifications(
-                                    applicationContext.getString(R.string.notification_successful),
-                                    applicationContext, fileName, "Success")
-                                val uri =
-                                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-                                // Do something with the downloaded file
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (id == downloadID) {
+                        val query = DownloadManager.Query()
+                        query.setFilterById(id)
+                        val cursor = downloadManager.query(query)
+                        if (cursor.moveToFirst())
+                            when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                                DownloadManager.STATUS_SUCCESSFUL -> {
+                                    notificationManager.sendNotifications(
+                                        applicationContext.getString(R.string.notification_successful),
+                                        applicationContext, fileName, "Success")
+                                    buttonState = ButtonState.Completed
+                                }
+                                DownloadManager.STATUS_FAILED -> {
+                                    notificationManager.sendNotifications(
+                                        applicationContext.getString(R.string.notification_failed),
+                                        applicationContext, fileName, "Failed")
+                                    buttonState = ButtonState.Completed
+                                }
+                                else -> {
+                                    val bytesDownloaded =
+                                        cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                                    val bytesTotal =
+                                        cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                                    val percent = bytesDownloaded * 100 / bytesTotal
+                                    // Update the download progress
+                                }
                             }
-                            DownloadManager.STATUS_FAILED -> {
-                                // Download failed
-                                val reason =
-                                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
-                                // Handle the failure
-                                notificationManager.sendNotifications(
-                                    applicationContext.getString(R.string.notification_failed),
-                                    applicationContext, fileName, "Failed")
-                            }
-                            else -> {
-                                // Download is still in progress
-                                val bytesDownloaded =
-                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-                                val bytesTotal =
-                                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                                val percent = bytesDownloaded * 100 / bytesTotal
-                                // Update the download progress
-                            }
-                        }
+                    }
                 }
             }
+            val intent = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            registerReceiver(receiver, intent)
         }
-        val intent = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        registerReceiver(receiver, intent)
     }
 
     companion object {

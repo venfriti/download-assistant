@@ -6,3 +6,5 @@ sealed class ButtonState {
     object Loading : ButtonState()
     object Completed : ButtonState()
 }
+
+var buttonState : ButtonState = ButtonState.Clicked
