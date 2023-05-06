@@ -79,6 +79,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setButtonState(buttonState: ButtonState) {
+        custom_button.setNewButtonState(buttonState)
+    }
+
     private fun updateUrl(url: DownloadUrl){
         downloadUrl = when (url){
             DownloadUrl.GLIDE -> {
@@ -125,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         if (downloadUrl == ""){
             Toast.makeText(this, "Choose a file to download", Toast.LENGTH_SHORT).show()
         } else{
-            buttonState = ButtonState.Loading
+            setButtonState(ButtonState.Loading)
             val request =
                 DownloadManager.Request(Uri.parse(downloadUrl))
                     .setTitle(getString(R.string.app_name))
@@ -152,13 +156,13 @@ class MainActivity : AppCompatActivity() {
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_successful),
                                         applicationContext, fileName, "Success")
-                                    buttonState = ButtonState.Completed
+                                    setButtonState(ButtonState.Completed)
                                 }
                                 DownloadManager.STATUS_FAILED -> {
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_failed),
                                         applicationContext, fileName, "Failed")
-                                    buttonState = ButtonState.Completed
+                                    setButtonState(ButtonState.Completed)
                                 }
                                 else -> {
                                     val bytesDownloaded =
