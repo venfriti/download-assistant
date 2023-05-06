@@ -18,6 +18,7 @@ class LoadingButton @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private var widthSize = 0
     private var heightSize = 0
+    private var label = ""
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
@@ -39,10 +40,19 @@ class LoadingButton @JvmOverloads constructor(
 
         val paint = Paint()
 
-        paint.color = when (buttonState) {
-            ButtonState.Clicked -> context.getColor(R.color.colorPrimary)
-            ButtonState.Loading -> context.getColor(R.color.colorPrimaryDark)
-            ButtonState.Completed -> context.getColor(R.color.colorPrimary)
+        when (buttonState) {
+            ButtonState.Clicked -> {
+                paint.color = context.getColor(R.color.colorPrimary)
+                label = resources.getString(R.string.download)
+            }
+            ButtonState.Loading -> {
+                paint.color = context.getColor(R.color.colorPrimaryDark)
+                label = resources.getString(R.string.downloading)
+            }
+            ButtonState.Completed -> {
+                paint.color = context.getColor(R.color.colorPrimary)
+                label = resources.getString(R.string.download)
+            }
         }
         invalidate()
 
@@ -54,7 +64,6 @@ class LoadingButton @JvmOverloads constructor(
         val textHeight = textPaint.descent() - textPaint.ascent()
         val textOffset = textHeight / 2 - textPaint.descent()
 
-        val label = resources.getString(R.string.download)
         canvas.drawText(
             label, width.toFloat() / 2,
             height.toFloat() / 2 + textOffset, textPaint
