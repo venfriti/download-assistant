@@ -153,15 +153,18 @@ class MainActivity : AppCompatActivity() {
                         if (cursor.moveToFirst())
                             when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
                                 DownloadManager.STATUS_SUCCESSFUL -> {
+                                    val uri =
+                                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_successful),
-                                        applicationContext, fileName, "Success")
+                                        applicationContext, fileName, "Success", uri)
                                     setButtonState(ButtonState.Completed)
                                 }
                                 DownloadManager.STATUS_FAILED -> {
+                                    val uri = ""
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_failed),
-                                        applicationContext, fileName, "Failed")
+                                        applicationContext, fileName, "Failed", uri)
                                     setButtonState(ButtonState.Completed)
                                 }
                                 else -> {

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.R
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
@@ -21,6 +20,7 @@ class DetailActivity : AppCompatActivity() {
             val fileName = extras.getString("file_name")
             val fileText = findViewById<TextView>(R.id.fileName)
             val statusText = findViewById<TextView>(R.id.statusName)
+
             fileText.text = fileName
             statusText.text = notificationStatus
         }
@@ -30,6 +30,8 @@ class DetailActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+
+
     }
 
 }

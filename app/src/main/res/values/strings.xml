@@ -29,4 +29,5 @@
     <string name="status">Status:</string>
     <string name="download_image">Download Image</string>
     <string name="downloading">Downloading</string>
+    <string name="open">Open</string>
 </resources>

@@ -5,20 +5,22 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.example.MainActivity
 
 
 private val NOTIFICATION_ID = 0
 private val REQUEST_CODE = 0
 private val FLAGS = 0
 
-fun NotificationManager.sendNotifications(messageBody: String, applicationContext: Context, fileName: String, notificationStatus: String){
+fun NotificationManager.sendNotifications(
+    messageBody: String, applicationContext: Context, fileName: String, notificationStatus: String, uri: String
+){
 
     //Create content intent for the notification, which launches detail activity
 
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
     contentIntent.putExtra("file_name", fileName)
     contentIntent.putExtra("notification_status", notificationStatus)
+    contentIntent.putExtra("file_uri", uri)
 
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
