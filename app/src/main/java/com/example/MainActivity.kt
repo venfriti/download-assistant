@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,11 +13,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -35,16 +42,48 @@ class MainActivity : AppCompatActivity() {
     private var downloadID: Long = 0
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
 
     private var downloadUrl: String = ""
     var fileName: String = ""
+    private lateinit var addButton: FloatingActionButton
+    private lateinit var urlEditText: EditText
+    private lateinit var enterButton: Button
+    private lateinit var optionFour: RadioButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        addButton = findViewById(R.id.addReminderFAB)
+        urlEditText = findViewById(R.id.customUrl)
+        enterButton = findViewById(R.id.enterButton)
+        optionFour = findViewById(R.id.option_four)
+
+        addButton.setOnClickListener {
+            openEditText()
+        }
+
+        enterButton.setOnClickListener {
+            urlEditText.visibility = View.GONE
+            enterButton.visibility = View.GONE
+            optionFour.visibility = View.VISIBLE
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
+        }
+
+        urlEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val userInput = s.toString()
+                optionFour.text = userInput
+            }
+        })
 
         notificationManager = ContextCompat.getSystemService(
             applicationContext,
@@ -77,6 +116,12 @@ class MainActivity : AppCompatActivity() {
         custom_button.setOnClickListener {
             download()
         }
+    }
+
+    private fun openEditText() {
+        urlEditText.visibility = View.VISIBLE
+        enterButton.visibility = View.VISIBLE
+        optionFour.visibility = View.GONE
     }
 
     private fun setButtonState(buttonState: ButtonState) {

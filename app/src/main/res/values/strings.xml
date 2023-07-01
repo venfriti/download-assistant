@@ -31,4 +31,6 @@
     <string name="downloading">Downloading</string>
     <string name="open">Open</string>
     <string name="add_url_button">Add Url Button</string>
+    <string name="enter">Enter</string>
+    <string name="enter_url">Enter Url</string>
 </resources>
