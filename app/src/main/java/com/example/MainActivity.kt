@@ -39,7 +39,8 @@ import java.net.MalformedURLException
 enum class DownloadUrl(val value: Int) {
     GLIDE(R.string.glide),
     UDACITY(R.string.udacity),
-    RETROFIT(R.string.retrofit)
+    RETROFIT(R.string.retrofit),
+    CUSTOM(R.string.custom_download)
 }
 
 class MainActivity : AppCompatActivity() {
@@ -119,6 +120,11 @@ class MainActivity : AppCompatActivity() {
                     fileName =
                         getString(R.string.retrofit_type_safe_http_client_for_android_and_java_by_square_inc)
                 }
+                R.id.option_four -> {
+                    updateUrl(DownloadUrl.CUSTOM)
+                    fileName =
+                        "Custom Download"
+                }
             }
         }
 
@@ -152,7 +158,6 @@ class MainActivity : AppCompatActivity() {
                 val responseCode = connection.responseCode
                 connection.disconnect()
                 responseCode == HttpURLConnection.HTTP_OK
-
             } catch (e: MalformedURLException) {
                 false
             } catch (e: Exception) {
@@ -182,6 +187,9 @@ class MainActivity : AppCompatActivity() {
 
             DownloadUrl.RETROFIT -> {
                 getString(R.string.retrofit_url)
+            }
+            DownloadUrl.CUSTOM -> {
+                urlLink
             }
         }
     }
