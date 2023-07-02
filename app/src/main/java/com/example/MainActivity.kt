@@ -24,11 +24,16 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URL
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
 
 
 enum class DownloadUrl(val value: Int) {
@@ -70,14 +75,7 @@ class MainActivity : AppCompatActivity() {
             urlLink = userInput
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
-            if (isFileDownloadable(urlLink)) {
-                urlEditText.visibility = View.GONE
-                enterButton.visibility = View.GONE
-                optionFour.visibility = View.VISIBLE
-            } else {
-                Toast.makeText(this, "Enter a valid download link", Toast.LENGTH_SHORT).show()
-            }
-
+            validateFileDownload(urlLink)
         }
 
         urlEditText.addTextChangedListener(object : TextWatcher {
@@ -129,25 +127,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isFileDownloadable(urlString: String): Boolean {
-        val url = URL(urlString)
-        val connection = url.openConnection() as HttpURLConnection
-            return try {
+    private fun validateFileDownload(urlString: String) {
+        lifecycleScope.launch {
+            if (isFileDownloadable(urlString)) {
+                urlEditText.visibility = View.GONE
+                enterButton.visibility = View.GONE
+                optionFour.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(this@MainActivity, "Enter a valid download link", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+
+    private suspend fun isFileDownloadable(urlString: String): Boolean =
+        withContext(Dispatchers.IO) {
+            val url = URL(urlString)
+            val connection = url.openConnection() as HttpURLConnection
+
+            try {
                 connection.requestMethod = "HEAD"
                 connection.connect()
 
                 val responseCode = connection.responseCode
-                // Check if the response code indicates a successful download (e.g., 200)
                 responseCode == HttpURLConnection.HTTP_OK
+            } catch (e: MalformedURLException) {
+                false
             } catch (e: Exception) {
-                // Error occurred or file is not downloadable
-                Toast.makeText(this, "error: $e", Toast.LENGTH_SHORT).show()
                 false
             } finally {
                 connection.disconnect()
             }
-
-    }
+        }
 
     private fun openEditText() {
         urlEditText.visibility = View.VISIBLE
@@ -272,5 +284,4 @@ class MainActivity : AppCompatActivity() {
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
     }
-
 }
