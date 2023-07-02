@@ -143,21 +143,20 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun isFileDownloadable(urlString: String): Boolean =
         withContext(Dispatchers.IO) {
-            val url = URL(urlString)
-            val connection = url.openConnection() as HttpURLConnection
-
             try {
+                val url = URL(urlString)
+                val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "HEAD"
                 connection.connect()
 
                 val responseCode = connection.responseCode
+                connection.disconnect()
                 responseCode == HttpURLConnection.HTTP_OK
+
             } catch (e: MalformedURLException) {
                 false
             } catch (e: Exception) {
                 false
-            } finally {
-                connection.disconnect()
             }
         }
 
