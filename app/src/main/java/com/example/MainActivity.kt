@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.retrofit_url)
             }
             DownloadUrl.CUSTOM -> {
-                urlLink
+                urlLink.trim()
             }
         }
     }
