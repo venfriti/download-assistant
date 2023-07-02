@@ -21,14 +21,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-
+import java.net.URL
+import java.net.HttpURLConnection
 
 
 enum class DownloadUrl(val value: Int) {
@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var urlEditText: EditText
     private lateinit var enterButton: Button
     private lateinit var optionFour: RadioButton
+    private lateinit var urlLink: String
+    private lateinit var userInput: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,11 +67,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         enterButton.setOnClickListener {
-            urlEditText.visibility = View.GONE
-            enterButton.visibility = View.GONE
-            optionFour.visibility = View.VISIBLE
+            urlLink = userInput
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
+            if (isFileDownloadable(urlLink)) {
+                urlEditText.visibility = View.GONE
+                enterButton.visibility = View.GONE
+                optionFour.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(this, "Enter a valid download link", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         urlEditText.addTextChangedListener(object : TextWatcher {
@@ -80,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                val userInput = s.toString()
+                userInput = s.toString()
                 optionFour.text = userInput
             }
         })
@@ -97,18 +105,21 @@ class MainActivity : AppCompatActivity() {
 
         val radioGroup: RadioGroup = findViewById(R.id.radio_group)
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId){
+            when (checkedId) {
                 R.id.option_one -> {
                     updateUrl(DownloadUrl.GLIDE)
                     fileName = getString(R.string.glide_image_loading_library_by_bumptech)
                 }
+
                 R.id.option_two -> {
                     updateUrl(DownloadUrl.UDACITY)
                     fileName = getString(R.string.loadapp_current_repository_by_udacity)
                 }
+
                 R.id.option_three -> {
                     updateUrl(DownloadUrl.RETROFIT)
-                    fileName = getString(R.string.retrofit_type_safe_http_client_for_android_and_java_by_square_inc)
+                    fileName =
+                        getString(R.string.retrofit_type_safe_http_client_for_android_and_java_by_square_inc)
                 }
             }
         }
@@ -116,6 +127,26 @@ class MainActivity : AppCompatActivity() {
         custom_button.setOnClickListener {
             download()
         }
+    }
+
+    private fun isFileDownloadable(urlString: String): Boolean {
+        val url = URL(urlString)
+        val connection = url.openConnection() as HttpURLConnection
+            return try {
+                connection.requestMethod = "HEAD"
+                connection.connect()
+
+                val responseCode = connection.responseCode
+                // Check if the response code indicates a successful download (e.g., 200)
+                responseCode == HttpURLConnection.HTTP_OK
+            } catch (e: Exception) {
+                // Error occurred or file is not downloadable
+                Toast.makeText(this, "error: $e", Toast.LENGTH_SHORT).show()
+                false
+            } finally {
+                connection.disconnect()
+            }
+
     }
 
     private fun openEditText() {
@@ -128,8 +159,8 @@ class MainActivity : AppCompatActivity() {
         custom_button.setNewButtonState(buttonState)
     }
 
-    private fun updateUrl(url: DownloadUrl){
-        downloadUrl = when (url){
+    private fun updateUrl(url: DownloadUrl) {
+        downloadUrl = when (url) {
             DownloadUrl.GLIDE -> {
                 getString(R.string.glide_url)
             }
@@ -146,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun createChannel(channelId: String, channelName: String) {
         //Create channel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelId,
                 channelName,
@@ -171,15 +202,18 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
-        if (downloadUrl == ""){
+        if (downloadUrl == "") {
             Toast.makeText(this, "Choose a file to download", Toast.LENGTH_SHORT).show()
-        } else{
+        } else {
             setButtonState(ButtonState.Loading)
             val request =
                 DownloadManager.Request(Uri.parse(downloadUrl))
                     .setTitle(getString(R.string.app_name))
                     .setDescription(getString(R.string.app_description))
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "filename.ext")
+                    .setDestinationInExternalPublicDir(
+                        Environment.DIRECTORY_DOWNLOADS,
+                        "filename.ext"
+                    )
                     .setRequiresCharging(false)
                     .setAllowedOverMetered(true)
                     .setAllowedOverRoaming(true)
@@ -202,16 +236,20 @@ class MainActivity : AppCompatActivity() {
                                         cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_successful),
-                                        applicationContext, fileName, "Success", uri)
+                                        applicationContext, fileName, "Success", uri
+                                    )
                                     setButtonState(ButtonState.Completed)
                                 }
+
                                 DownloadManager.STATUS_FAILED -> {
                                     val uri = ""
                                     notificationManager.sendNotifications(
                                         applicationContext.getString(R.string.notification_failed),
-                                        applicationContext, fileName, "Failed", uri)
+                                        applicationContext, fileName, "Failed", uri
+                                    )
                                     setButtonState(ButtonState.Completed)
                                 }
+
                                 else -> {
                                     val bytesDownloaded =
                                         cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
