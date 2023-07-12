@@ -118,7 +118,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.LoadingButton
+    <com.example.button.LoadingButton
         android:id="@+id/custom_button"
         android:layout_width="match_parent"
         android:layout_height="60dp"

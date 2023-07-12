@@ -1,4 +1,4 @@
-package com.example
+package com.example.button
 
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.INFINITE
@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import com.example.R
 
 private class LoadingCircle(val start: Float, val sweep: Float, val color: Int)
 class LoadingButton @JvmOverloads constructor(
@@ -102,8 +103,14 @@ class LoadingButton @JvmOverloads constructor(
                 buttonClickedText = getInt(R.styleable.LoadingButton_buttonClickedText, 0)
                 buttonLoadingText = getInt(R.styleable.LoadingButton_buttonLoadingText, 0)
                 buttonCompleteText = getInt(R.styleable.LoadingButton_buttonCompletedText, 0)
-                buttonTextColor = getInt(R.styleable.LoadingButton_buttonTextColor, context.getColor(R.color.white))
-                buttonBackgroundColor = getInt(R.styleable.LoadingButton_buttonBackgroundColor, context.getColor(R.color.colorPrimary))
+                buttonTextColor = getInt(
+                    R.styleable.LoadingButton_buttonTextColor, context.getColor(
+                        R.color.white
+                    ))
+                buttonBackgroundColor = getInt(
+                    R.styleable.LoadingButton_buttonBackgroundColor, context.getColor(
+                        R.color.colorPrimary
+                    ))
             } finally {
                 recycle()
             }
