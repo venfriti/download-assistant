@@ -19,6 +19,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var optionFour: RadioButton
     private lateinit var urlLink: String
     private lateinit var userInput: String
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         urlEditText = findViewById(R.id.customUrl)
         enterButton = findViewById(R.id.enterButton)
         optionFour = findViewById(R.id.option_four)
+        progressBar = findViewById(R.id.status_loading_wheel)
 
         addButton.setOnClickListener {
             openEditText()
@@ -74,9 +77,11 @@ class MainActivity : AppCompatActivity() {
 
         enterButton.setOnClickListener {
             urlLink = userInput
+            progressBar.visibility = View.VISIBLE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
             validateFileDownload(urlLink)
+
         }
 
         urlEditText.addTextChangedListener(object : TextWatcher {
@@ -144,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
+        progressBar.visibility = View.GONE
     }
 
 
