@@ -36,6 +36,7 @@ import kotlinx.coroutines.withContext
 import java.net.URL
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
+import com.example.MainFragment
 
 
 //enum class DownloadUrl(val value: Int) {
@@ -64,7 +65,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, MainFragment.newInstance())
+                .commitNow()
+        }
+//        setSupportActionBar(toolbar)
 
 //        addButton = findViewById(R.id.addReminderFAB)
 //        urlEditText = findViewById(R.id.customUrl)

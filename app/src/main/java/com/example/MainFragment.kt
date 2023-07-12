@@ -5,7 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.example.databinding.FragmentMainBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class MainFragment : Fragment() {
 
@@ -22,11 +26,26 @@ class MainFragment : Fragment() {
 //    private lateinit var urlLink: String
 //    private lateinit var userInput: String
 //    private lateinit var progressBar: ProgressBar
+
+    private lateinit var binding: FragmentMainBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+    binding = DataBindingUtil.inflate(
+        inflater, R.layout.fragment_main, container, false
+    )
+    val activity = requireActivity()
+    if (activity is AppCompatActivity){
+        activity.setSupportActionBar(binding.toolbar)
+    }
+
+
+    return binding.root
+    }
+
+    companion object {
+        fun newInstance() = MainFragment()
     }
 }
