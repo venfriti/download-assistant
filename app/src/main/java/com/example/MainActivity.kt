@@ -249,6 +249,7 @@ class MainActivity : AppCompatActivity() {
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
             val receiver = object : BroadcastReceiver() {
+                @SuppressLint("Range")
                 override fun onReceive(context: Context?, intent: Intent?) {
                     val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                     if (id == downloadID) {
