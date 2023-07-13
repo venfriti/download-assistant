@@ -22,13 +22,136 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".MainActivity"
+            tools:showIn="@layout/fragment_main">
+
+            <ImageView
+                android:id="@+id/downloadImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/download_image"
+                android:src="@drawable/main_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/downloadImage">
+
+                <RadioButton
+                    android:id="@+id/option_one"
+                    style="@style/radioButtonProperties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/glide_image_loading_library_by_bumptech"
+                    android:text="@string/glide_image_loading_library_by_bumptech" />
+
+                <RadioButton
+                    android:id="@+id/option_two"
+                    style="@style/radioButtonProperties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/loadapp_current_repository_by_udacity"
+                    android:text="@string/loadapp_current_repository_by_udacity" />
+
+                <RadioButton
+                    android:id="@+id/option_three"
+                    style="@style/radioButtonProperties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc"
+                    android:text="@string/retrofit_type_safe_http_client_for_android_and_java_by_square_inc" />
+
+                <RadioButton
+                    android:id="@+id/option_four"
+                    style="@style/radioButtonProperties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/customUrl"
+                style="@style/editStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:ems="10"
+                android:hint="@string/enter_url"
+                android:importantForAutofill="no"
+                android:inputType="textUri"
+                android:labelFor="@id/customUrl"
+                android:minHeight="40dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/enterButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group"
+                tools:ignore="LabelFor" />
+
+            <Button
+                android:id="@+id/enterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/enter"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addReminderFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:contentDescription="@string/add_url_button"
+                android:focusable="true"
+                android:src="@drawable/ic_add"
+                app:fabSize="normal"
+                app:layout_anchorGravity="bottom|right|end"
+                app:layout_constraintBottom_toTopOf="@+id/custom_button"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/status_loading_wheel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.example.button.LoadingButton
+                android:id="@+id/custom_button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="@string/download"
+                android:text="@string/download"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <!-- TODO: Update blank fragment layout -->
-
-
 </layout>
