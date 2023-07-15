@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.R
 import com.example.button.ButtonState
@@ -54,9 +55,10 @@ enum class DownloadUrl(val value: Int) {
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
+    private val viewModel: MainViewModel by activityViewModels()
 
-    private var downloadID: Long = 0
     private lateinit var notificationManager: NotificationManager
+    private var downloadID: Long = 0
 
     private var downloadUrl: String = ""
     var fileName: String = ""
@@ -74,6 +76,8 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_main, container, false
@@ -125,7 +129,8 @@ class MainFragment : Fragment() {
 
         createChannel(
             getString(R.string.download_notification_channel_id),
-            getString(R.string.download_notification_channel_name)
+            getString(R.string.download_notification_channel_name),
+            requireContext()
         )
 
         val radioGroup: RadioGroup = binding.radioGroup
@@ -165,7 +170,7 @@ class MainFragment : Fragment() {
 
         private fun validateFileDownload(urlString: String) {
         lifecycleScope.launch {
-            if (isFileDownloadable(urlString)) {
+            if (viewModel.isFileDownloadable(urlString)) {
                 urlEditText.visibility = View.GONE
                 enterButton.visibility = View.GONE
                 optionFour.visibility = View.VISIBLE
@@ -183,23 +188,23 @@ class MainFragment : Fragment() {
     }
 
 
-    private suspend fun isFileDownloadable(urlString: String): Boolean =
-        withContext(Dispatchers.IO) {
-            try {
-                val url = URL(urlString)
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "HEAD"
-                connection.connect()
-
-                val responseCode = connection.responseCode
-                connection.disconnect()
-                responseCode == HttpURLConnection.HTTP_OK
-            } catch (e: MalformedURLException) {
-                false
-            } catch (e: Exception) {
-                false
-            }
-        }
+//    private suspend fun isFileDownloadable(urlString: String): Boolean =
+//        withContext(Dispatchers.IO) {
+//            try {
+//                val url = URL(urlString)
+//                val connection = url.openConnection() as HttpURLConnection
+//                connection.requestMethod = "HEAD"
+//                connection.connect()
+//
+//                val responseCode = connection.responseCode
+//                connection.disconnect()
+//                responseCode == HttpURLConnection.HTTP_OK
+//            } catch (e: MalformedURLException) {
+//                false
+//            } catch (e: Exception) {
+//                false
+//            }
+//        }
 
     private fun openEditText() {
         urlEditText.visibility = View.VISIBLE
@@ -230,30 +235,30 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun createChannel(channelId: String, channelName: String) {
-        //Create channel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId,
-                channelName,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-
-                .apply {
-                    setShowBadge(false)
-                }
-
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.description = "download completed"
-
-            notificationManager = requireActivity().getSystemService(
-                NotificationManager::class.java
-            )
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
-    }
+//    private fun createChannel(channelId: String, channelName: String) {
+//        //Create channel
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val notificationChannel = NotificationChannel(
+//                channelId,
+//                channelName,
+//                NotificationManager.IMPORTANCE_DEFAULT
+//            )
+//
+//                .apply {
+//                    setShowBadge(false)
+//                }
+//
+//            notificationChannel.enableLights(true)
+//            notificationChannel.lightColor = Color.RED
+//            notificationChannel.enableVibration(true)
+//            notificationChannel.description = "download completed"
+//
+//            notificationManager = requireActivity().getSystemService(
+//                NotificationManager::class.java
+//            )
+//            notificationManager.createNotificationChannel(notificationChannel)
+//        }
+//    }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
@@ -322,10 +327,5 @@ class MainFragment : Fragment() {
             val intent = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             requireActivity().registerReceiver(receiver, intent)
         }
-    }
-
-
-    companion object {
-        fun newInstance() = MainFragment()
     }
 }
