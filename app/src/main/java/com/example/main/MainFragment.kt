@@ -1,4 +1,4 @@
-package com.example
+package com.example.main
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -34,7 +34,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.R
 import com.example.button.ButtonState
+import com.example.sendNotifications
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
