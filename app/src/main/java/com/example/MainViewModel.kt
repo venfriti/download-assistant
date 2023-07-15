@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
