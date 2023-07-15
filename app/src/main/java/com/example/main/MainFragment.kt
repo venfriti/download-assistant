@@ -43,8 +43,7 @@ import kotlinx.coroutines.launch
 enum class DownloadUrl(val value: Int) {
     GLIDE(R.string.glide),
     UDACITY(R.string.udacity),
-    RETROFIT(R.string.retrofit),
-    CUSTOM(R.string.custom_download)
+    RETROFIT(R.string.retrofit)
 }
 
 class MainFragment : Fragment() {
@@ -148,7 +147,7 @@ class MainFragment : Fragment() {
                 }
 
                 R.id.option_four -> {
-                    updateUrl(DownloadUrl.CUSTOM)
+                    downloadUrl = urlLink
                     fileName =
                         "Custom Download"
                 }
@@ -193,22 +192,7 @@ class MainFragment : Fragment() {
     }
 
     private fun updateUrl(url: DownloadUrl) {
-        downloadUrl = when (url) {
-            DownloadUrl.GLIDE -> {
-                getString(R.string.glide_url)
-            }
-
-            DownloadUrl.UDACITY -> {
-                getString(R.string.udacity_url)
-            }
-
-            DownloadUrl.RETROFIT -> {
-                getString(R.string.retrofit_url)
-            }
-            DownloadUrl.CUSTOM -> {
-                urlLink.trim()
-            }
-        }
+        downloadUrl = viewModel.updateUrl(url)
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")

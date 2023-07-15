@@ -46,4 +46,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
                 false
             }
         }
+
+    fun updateUrl(url: DownloadUrl) : String {
+        return when (url) {
+            DownloadUrl.GLIDE -> {
+                appContext.getString(R.string.glide_url)
+            }
+
+            DownloadUrl.UDACITY -> {
+                appContext.getString(R.string.udacity_url)
+            }
+
+            DownloadUrl.RETROFIT -> {
+                appContext.getString(R.string.retrofit_url)
+            }
+        }
+    }
 }
