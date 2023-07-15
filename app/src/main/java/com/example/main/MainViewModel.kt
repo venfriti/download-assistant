@@ -46,5 +46,4 @@ class MainViewModel(application: Application) : AndroidViewModel(application){
                 false
             }
         }
-
 }
