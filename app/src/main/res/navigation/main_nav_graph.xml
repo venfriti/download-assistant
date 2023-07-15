@@ -11,7 +11,7 @@
         android:label="MainActivity" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.MainFragment"
+        android:name="com.example.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
     <activity

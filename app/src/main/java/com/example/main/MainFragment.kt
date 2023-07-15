@@ -2,7 +2,6 @@ package com.example.main
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.os.Bundle
@@ -38,12 +37,7 @@ import com.example.R
 import com.example.button.ButtonState
 import com.example.createChannel
 import com.example.sendNotifications
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 
 
 enum class DownloadUrl(val value: Int) {
@@ -188,25 +182,6 @@ class MainFragment : Fragment() {
         imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
     }
 
-
-//    private suspend fun isFileDownloadable(urlString: String): Boolean =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val url = URL(urlString)
-//                val connection = url.openConnection() as HttpURLConnection
-//                connection.requestMethod = "HEAD"
-//                connection.connect()
-//
-//                val responseCode = connection.responseCode
-//                connection.disconnect()
-//                responseCode == HttpURLConnection.HTTP_OK
-//            } catch (e: MalformedURLException) {
-//                false
-//            } catch (e: Exception) {
-//                false
-//            }
-//        }
-
     private fun openEditText() {
         urlEditText.visibility = View.VISIBLE
         enterButton.visibility = View.VISIBLE
@@ -236,31 +211,6 @@ class MainFragment : Fragment() {
         }
     }
 
-//    private fun createChannel(channelId: String, channelName: String) {
-//        //Create channel
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val notificationChannel = NotificationChannel(
-//                channelId,
-//                channelName,
-//                NotificationManager.IMPORTANCE_DEFAULT
-//            )
-//
-//                .apply {
-//                    setShowBadge(false)
-//                }
-//
-//            notificationChannel.enableLights(true)
-//            notificationChannel.lightColor = Color.RED
-//            notificationChannel.enableVibration(true)
-//            notificationChannel.description = "download completed"
-//
-//            notificationManager = requireActivity().getSystemService(
-//                NotificationManager::class.java
-//            )
-//            notificationManager.createNotificationChannel(notificationChannel)
-//        }
-//    }
-
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
         val applicationContext = requireContext().applicationContext
@@ -268,18 +218,7 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), "Choose a file to download", Toast.LENGTH_SHORT).show()
         } else {
             setButtonState(ButtonState.Loading)
-            val request =
-                DownloadManager.Request(Uri.parse(downloadUrl))
-                    .setTitle(getString(R.string.app_name))
-                    .setDescription(getString(R.string.app_description))
-                    .setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_DOWNLOADS,
-                        "filename.ext"
-                    )
-                    .setRequiresCharging(false)
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true)
-
+            val request = viewModel.request(downloadUrl)
             val downloadManager = requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
