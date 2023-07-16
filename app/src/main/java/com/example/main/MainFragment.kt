@@ -31,12 +31,19 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.databinding.Observable
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.R
 import com.example.button.ButtonState
 import com.example.createChannel
 import com.example.sendNotifications
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 
@@ -51,11 +58,16 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private val viewModel: MainViewModel by activityViewModels()
 
+    private val _loadingState = MutableLiveData<Boolean>()
+    val loadingState : LiveData<Boolean> = _loadingState
+
     private lateinit var notificationManager: NotificationManager
     private var downloadID: Long = 0
 
     private var downloadUrl: String = ""
     var fileName: String = ""
+
+
 
     private lateinit var addButton: FloatingActionButton
     private lateinit var urlEditText: EditText
@@ -96,11 +108,11 @@ class MainFragment : Fragment() {
         }
 
         enterButton.setOnClickListener {
+            _loadingState.value = true
             urlLink = userInput
             progressBar.visibility = View.VISIBLE
             hideSoftKeyboard()
             validateFileDownload(urlLink)
-
         }
 
         urlEditText.addTextChangedListener(object : TextWatcher {
@@ -158,6 +170,10 @@ class MainFragment : Fragment() {
             download()
         }
 
+        loadingState.observe(viewLifecycleOwner, Observer { value ->
+            binding.statusLoadingWheel.isVisible = value
+        })
+
 
         return binding.root
     }
@@ -172,9 +188,11 @@ class MainFragment : Fragment() {
                 Toast.makeText(requireContext(), "Enter a valid download link", Toast.LENGTH_SHORT)
                     .show()
             }
+            _loadingState.value = false
         }
-        progressBar.visibility = View.GONE
     }
+
+
 
     private fun hideSoftKeyboard() {
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
