@@ -1,13 +1,13 @@
 # Download Assistant
-Download Assistant provides functionality for downloading files from the internet. It allows users to paste valid URL links into the app to initiate the download process. After the download is complete, the app sends a notification to the user indicating whether the download was successful or if it encountered a failure.
-
-The app also contains custom views and animations.
+Download Assistant allows users to download files by pasting the download links in the app. The app sends a customized notification depending on if the download was a success or failure. It also makes use of custom views to animate the download button.
 
 # Used Libraries and Technologies
 [Kotlin](https://kotlinlang.org/) - Primary programming language.
+
+[MVVM](https://developer.android.com/topic/architecture) - Structured Model-View-ViewModel architecture.
 
 [Kotlin Coroutines](https://developer.android.com/kotlin/coroutines) - Thread management and concurrency.
 
 [AndroidX Components](https://developer.android.com/jetpack/androidx/) - Jetpack components.
 
-(https://github.com/venfriti/download-assistant/assets/90982374/55e355d3-88a8-4a3f-a52e-323ab2b22c9d)
+[Custom Views](https://developer.android.com/develop/ui/views/layout/custom-views/custom-components) - Button Animation.
