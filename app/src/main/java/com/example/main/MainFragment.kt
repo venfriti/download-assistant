@@ -59,15 +59,14 @@ class MainFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
 
     private val _loadingState = MutableLiveData<Boolean>()
-    val loadingState : LiveData<Boolean> = _loadingState
+    val loadingState: LiveData<Boolean> = _loadingState
 
     private lateinit var notificationManager: NotificationManager
     private var downloadID: Long = 0
 
     private var downloadUrl: String = ""
     var fileName: String = ""
-
-
+    
 
     private lateinit var addButton: FloatingActionButton
     private lateinit var urlEditText: EditText
@@ -102,19 +101,6 @@ class MainFragment : Fragment() {
         optionFour = binding.optionFour
         progressBar = binding.statusLoadingWheel
 
-
-        addButton.setOnClickListener {
-            openEditText()
-        }
-
-        enterButton.setOnClickListener {
-            _loadingState.value = true
-            urlLink = userInput
-            progressBar.visibility = View.VISIBLE
-            hideSoftKeyboard()
-            validateFileDownload(urlLink)
-        }
-
         urlEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -127,6 +113,24 @@ class MainFragment : Fragment() {
                 optionFour.text = userInput
             }
         })
+
+        addButton.setOnClickListener {
+            openEditText()
+        }
+
+        enterButton.setOnClickListener {
+            if (urlEditText.text.toString() == ""){
+                Toast.makeText(requireContext(), "Enter a valid download link", Toast.LENGTH_SHORT)
+                    .show()
+            } else
+            {
+                _loadingState.value = true
+                urlLink = userInput
+                progressBar.visibility = View.VISIBLE
+                hideSoftKeyboard()
+                validateFileDownload(urlLink)
+            }
+        }
 
         notificationManager = ContextCompat.getSystemService(
             requireContext().applicationContext,
@@ -178,7 +182,7 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-        private fun validateFileDownload(urlString: String) {
+    private fun validateFileDownload(urlString: String) {
         lifecycleScope.launch {
             if (viewModel.isFileDownloadable(urlString)) {
                 urlEditText.visibility = View.GONE
@@ -193,9 +197,9 @@ class MainFragment : Fragment() {
     }
 
 
-
     private fun hideSoftKeyboard() {
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
     }
 
@@ -221,7 +225,8 @@ class MainFragment : Fragment() {
         } else {
             setButtonState(ButtonState.Loading)
             val request = viewModel.request(downloadUrl)
-            val downloadManager = requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val downloadManager =
+                requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
