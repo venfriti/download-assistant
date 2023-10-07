@@ -1,5 +1,7 @@
 # Download Assistant
-Download Assistant allows users to download files by pasting the download links in the app. The app sends a customized notification depending on if the download was a success or failure. It also makes use of custom views to animate the download button.
+Download Assistant allows users to download files by pasting the download links in the app. The app sends a customized notification depending on if the download was a success or failure and makes use of custom views to animate the download button.
+
+The app is built using MVVM architecture, it makes use of the notification manager for handling notifications and makes use of coroutines for handling network requests
 
 # Used Libraries and Technologies
 [Kotlin](https://kotlinlang.org/) - Primary programming language.
