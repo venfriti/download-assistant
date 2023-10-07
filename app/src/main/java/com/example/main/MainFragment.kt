@@ -2,7 +2,6 @@ package com.example.main
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.os.Bundle
@@ -33,23 +32,26 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.core.view.isVisible
+import androidx.databinding.Observable
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.R
 import com.example.button.ButtonState
+import com.example.createChannel
 import com.example.sendNotifications
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 
 
 enum class DownloadUrl(val value: Int) {
     GLIDE(R.string.glide),
     UDACITY(R.string.udacity),
-    RETROFIT(R.string.retrofit),
-    CUSTOM(R.string.custom_download)
+    RETROFIT(R.string.retrofit)
 }
 
 class MainFragment : Fragment() {
@@ -57,11 +59,15 @@ class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
     private val viewModel: MainViewModel by activityViewModels()
 
+    private val _loadingState = MutableLiveData<Boolean>()
+    val loadingState: LiveData<Boolean> = _loadingState
+
     private lateinit var notificationManager: NotificationManager
     private var downloadID: Long = 0
 
     private var downloadUrl: String = ""
     var fileName: String = ""
+    
 
     private lateinit var addButton: FloatingActionButton
     private lateinit var urlEditText: EditText
@@ -96,19 +102,6 @@ class MainFragment : Fragment() {
         optionFour = binding.optionFour
         progressBar = binding.statusLoadingWheel
 
-
-        addButton.setOnClickListener {
-            openEditText()
-        }
-
-        enterButton.setOnClickListener {
-            urlLink = userInput
-            progressBar.visibility = View.VISIBLE
-            hideSoftKeyboard()
-            validateFileDownload(urlLink)
-
-        }
-
         urlEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -121,6 +114,24 @@ class MainFragment : Fragment() {
                 optionFour.text = userInput
             }
         })
+
+        addButton.setOnClickListener {
+            openEditText()
+        }
+
+        enterButton.setOnClickListener {
+            if (urlEditText.text.toString() == ""){
+                Toast.makeText(requireContext(), "Enter a valid download link", Toast.LENGTH_SHORT)
+                    .show()
+            } else
+            {
+                _loadingState.value = true
+                urlLink = userInput
+                progressBar.visibility = View.VISIBLE
+                hideSoftKeyboard()
+                validateFileDownload(urlLink)
+            }
+        }
 
         notificationManager = ContextCompat.getSystemService(
             requireContext().applicationContext,
@@ -153,7 +164,7 @@ class MainFragment : Fragment() {
                 }
 
                 R.id.option_four -> {
-                    updateUrl(DownloadUrl.CUSTOM)
+                    downloadUrl = urlLink
                     fileName =
                         "Custom Download"
                 }
@@ -164,11 +175,15 @@ class MainFragment : Fragment() {
             download()
         }
 
+        loadingState.observe(viewLifecycleOwner, Observer { value ->
+            binding.statusLoadingWheel.isVisible = value
+        })
+
 
         return binding.root
     }
 
-        private fun validateFileDownload(urlString: String) {
+    private fun validateFileDownload(urlString: String) {
         lifecycleScope.launch {
             if (viewModel.isFileDownloadable(urlString)) {
                 urlEditText.visibility = View.GONE
@@ -178,34 +193,17 @@ class MainFragment : Fragment() {
                 Toast.makeText(requireContext(), "Enter a valid download link", Toast.LENGTH_SHORT)
                     .show()
             }
+            _loadingState.value = false
         }
-        progressBar.visibility = View.GONE
     }
+
 
     private fun hideSoftKeyboard() {
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
     }
-
-
-//    private suspend fun isFileDownloadable(urlString: String): Boolean =
-//        withContext(Dispatchers.IO) {
-//            try {
-//                val url = URL(urlString)
-//                val connection = url.openConnection() as HttpURLConnection
-//                connection.requestMethod = "HEAD"
-//                connection.connect()
-//
-//                val responseCode = connection.responseCode
-//                connection.disconnect()
-//                responseCode == HttpURLConnection.HTTP_OK
-//            } catch (e: MalformedURLException) {
-//                false
-//            } catch (e: Exception) {
-//                false
-//            }
-//        }
-
+    
     private fun openEditText() {
         urlEditText.visibility = View.VISIBLE
         enterButton.visibility = View.VISIBLE
@@ -234,31 +232,9 @@ class MainFragment : Fragment() {
             }
         }
     }
+        downloadUrl = viewModel.updateUrl(url)
+    }
 
-//    private fun createChannel(channelId: String, channelName: String) {
-//        //Create channel
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val notificationChannel = NotificationChannel(
-//                channelId,
-//                channelName,
-//                NotificationManager.IMPORTANCE_DEFAULT
-//            )
-//
-//                .apply {
-//                    setShowBadge(false)
-//                }
-//
-//            notificationChannel.enableLights(true)
-//            notificationChannel.lightColor = Color.RED
-//            notificationChannel.enableVibration(true)
-//            notificationChannel.description = "download completed"
-//
-//            notificationManager = requireActivity().getSystemService(
-//                NotificationManager::class.java
-//            )
-//            notificationManager.createNotificationChannel(notificationChannel)
-//        }
-//    }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
@@ -267,19 +243,9 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), "Choose a file to download", Toast.LENGTH_SHORT).show()
         } else {
             setButtonState(ButtonState.Loading)
-            val request =
-                DownloadManager.Request(Uri.parse(downloadUrl))
-                    .setTitle(getString(R.string.app_name))
-                    .setDescription(getString(R.string.app_description))
-                    .setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_DOWNLOADS,
-                        "filename.ext"
-                    )
-                    .setRequiresCharging(false)
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true)
-
-            val downloadManager = requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val request = viewModel.request(downloadUrl)
+            val downloadManager =
+                requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
 
