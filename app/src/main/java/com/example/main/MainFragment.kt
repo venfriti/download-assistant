@@ -31,6 +31,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.core.view.isVisible
 import androidx.databinding.Observable
 import androidx.fragment.app.activityViewModels
@@ -202,7 +203,7 @@ class MainFragment : Fragment() {
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(urlEditText.windowToken, 0)
     }
-
+    
     private fun openEditText() {
         urlEditText.visibility = View.VISIBLE
         enterButton.visibility = View.VISIBLE
@@ -214,8 +215,26 @@ class MainFragment : Fragment() {
     }
 
     private fun updateUrl(url: DownloadUrl) {
+        downloadUrl = when (url) {
+            DownloadUrl.GLIDE -> {
+                getString(R.string.glide_url)
+            }
+
+            DownloadUrl.UDACITY -> {
+                getString(R.string.udacity_url)
+            }
+
+            DownloadUrl.RETROFIT -> {
+                getString(R.string.retrofit_url)
+            }
+            DownloadUrl.CUSTOM -> {
+                urlLink.trim()
+            }
+        }
+    }
         downloadUrl = viewModel.updateUrl(url)
     }
+
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun download() {
