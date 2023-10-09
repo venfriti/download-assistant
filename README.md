@@ -13,3 +13,8 @@ The app is built using MVVM architecture, it makes use of the notification manag
 [AndroidX Components](https://developer.android.com/jetpack/androidx/) - Jetpack components.
 
 [Custom Views](https://developer.android.com/develop/ui/views/layout/custom-views/custom-components) - Button Animation.
+
+[Notification Manager](https://developer.android.com/reference/android/app/NotificationManager) - Notification Handling.
+
+https://github.com/venfriti/download-assistant/assets/90982374/b79c98d1-e98d-472c-b530-6ef6bc21bd84
+
